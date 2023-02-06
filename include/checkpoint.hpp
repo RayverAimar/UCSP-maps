@@ -1,7 +1,5 @@
-#include <iostream>
 
-using namespace std;
-
+#include <string>
 
 struct Checkpoint
 {
@@ -9,12 +7,15 @@ struct Checkpoint
 public:
 
     unsigned int _floor;
-
+    
     Checkpoint(const unsigned int);
     ~Checkpoint();
 
-private:
+    std::string get_name();
+    bool set_name(std::string);
 
+private:
+    std::string _name;
 };
 
 Checkpoint::Checkpoint(const unsigned int floor) : _floor(floor)
