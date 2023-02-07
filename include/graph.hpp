@@ -14,7 +14,6 @@ struct CEdge
 public:
     
     typedef typename G::Node Node;
-    typedef typename G::P Passage;
     
     Passage* _passage;
     Node* _checkpoint[2];
@@ -39,7 +38,7 @@ template <class G>
 CEdge<G>::~CEdge()
 {
     delete _passage;
-    delete [] _checkpoint;
+    //delete [] _checkpoint;
 }
 
 
@@ -50,7 +49,6 @@ struct CNode
 public:
 
     typedef typename G::Edge Edge;
-    typedef typename G::C Checkpoint;
 
     Checkpoint* _checkpoint;
     list<Edge*> _branches;
@@ -67,17 +65,13 @@ CNode<G>::CNode(Checkpoint* checkpoint)
     _checkpoint = checkpoint;
 }
 
-template<class _N, class _E>
 struct Graph
 {
     
 public:
 
-    typedef _N C;
-    typedef _E P;
-    typedef Graph<_N,_E> G;
-    typedef CEdge<G> Edge;
-    typedef CNode<G> Node;
+    typedef CEdge<Graph> Edge;
+    typedef CNode<Graph> Node;
 
     std::vector<Node*> nodes;
     
@@ -95,8 +89,7 @@ private:
 
 };
 
-template<class _N, class _E>
-bool Graph<_N, _E>::find(Node* source, Node* destiny, Edge*& p) const
+bool Graph::find(Node* source, Node* destiny, Edge*& p) const
 {
     for(auto it = source->_branches.begin(); it != source->_branches.end(); ++it)
     {
@@ -109,12 +102,11 @@ bool Graph<_N, _E>::find(Node* source, Node* destiny, Edge*& p) const
     return false;
 }
 
-template<class _N, class _E>
-bool Graph<_N, _E>::find(Checkpoint* checkpoint, Node*& p) const
+bool Graph::find(Checkpoint* checkpoint, Node*& p) const
 {
     for(auto it = nodes.begin(); it != nodes.end(); ++it)
     {
-        if((*it)->_checkpoint->get_name() == checkpoint->get_name())
+        if(((*it)->_checkpoint)->_name == checkpoint->_name)
         {
             p = *it;
             return true;
@@ -123,8 +115,7 @@ bool Graph<_N, _E>::find(Checkpoint* checkpoint, Node*& p) const
     return false;
 }
 
-template<class _N, class _E>
-bool Graph<_N, _E>::insert(Checkpoint* checkpoint)
+bool Graph::insert(Checkpoint* checkpoint)
 {
     Node* p = nullptr;
     if(find(checkpoint, p)) return 0;
@@ -133,28 +124,26 @@ bool Graph<_N, _E>::insert(Checkpoint* checkpoint)
     return true;
 }
 
-template<class _N, class _E>
-bool Graph<_N, _E>::insert(Passage* passage, Node* source, Node* destiny) const
+bool Graph::insert(Passage* passage, Node* source, Node* destiny) const
 {
     Node *a = nullptr, *b = nullptr;
     if(!(find(source->_checkpoint, a) && find(destiny->_checkpoint, b))) return false;
-    Edge go = Edge(passage, a, b);
-    Edge back = Edge(passage, b, a);
+    Edge* go = new Edge(passage, a, b);
+    Edge* back = new Edge(passage, b, a);
     a->_branches.push_back(go);
     b->_branches.push_back(back);
     return true;
 }
 
-template<class _N, class _E>
-void Graph<_N, _E>::print()
+void Graph::print()
 {
     for(size_t i = 0; i < nodes.size(); i++)
     {
-        std::cout << nodes[i]._checkpoint->get_name() << ": ";
+        std::cout << (nodes[i]->_checkpoint)->_name << ": ";
         for(auto it = nodes[i]->_branches.begin(); it != nodes[i]->_branches.end(); ++it)
         {
             std::cout << " <-> ";
-            std::cout << (*it)->_checkpoint[1]->get_name() << std::left << std::setw(2) << (*it)->_passage->_distance << " | ";
+            std::cout << ((*it)->_checkpoint[1])->_checkpoint->_name << std::left << std::setw(2) << (*it)->_passage->_distance << " | ";
         }
         std::cout << "\n";
     }
