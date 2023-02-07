@@ -7,18 +7,19 @@ struct Checkpoint
 public:
 
     unsigned int _floor;
-    
-    Checkpoint(const unsigned int);
+    std::string _name;
+
+    Checkpoint(const unsigned int, const std::string);
     ~Checkpoint();
 
     std::string get_name();
     bool set_name(std::string);
 
 private:
-    std::string _name;
+    
 };
 
-Checkpoint::Checkpoint(const unsigned int floor) : _floor(floor)
+Checkpoint::Checkpoint(const unsigned int floor, const std::string name) : _floor(floor), _name(name)
 {
 
 }
