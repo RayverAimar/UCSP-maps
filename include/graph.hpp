@@ -38,7 +38,7 @@ template <class G>
 CEdge<G>::~CEdge()
 {
     delete _passage;
-    //delete [] _checkpoint;
+    delete [] _checkpoint;
 }
 
 
@@ -77,17 +77,25 @@ public:
     
     bool find(Node*, Node*, Edge*&) const;
     bool find(Checkpoint*, Node*&) const;
+    bool find(std::string, Node*&) const;
 
     bool insert(Passage*, Node*, Node*) const;
     bool insert(Checkpoint*);
+
+    void shortest_path_between(std::string, std::string);
 
     void print();
 
 private:
 
-
-
 };
+
+
+void Graph::shortest_path_between(std::string from, std::string to)
+{
+    
+}
+
 
 bool Graph::find(Node* source, Node* destiny, Edge*& p) const
 {
@@ -107,6 +115,19 @@ bool Graph::find(Checkpoint* checkpoint, Node*& p) const
     for(auto it = nodes.begin(); it != nodes.end(); ++it)
     {
         if(((*it)->_checkpoint)->_name == checkpoint->_name)
+        {
+            p = *it;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Graph::find(std::string name, Node*& p) const
+{
+    for(auto it = nodes.begin(); it != nodes.end(); ++it)
+    {
+        if(((*it)->_checkpoint)->_name == name)
         {
             p = *it;
             return true;
