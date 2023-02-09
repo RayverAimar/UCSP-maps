@@ -10,5 +10,6 @@ int main()
     Passage* first_passage = new Passage(17.7, 1, 20.0);
     sketch.insert(main_gate);
     sketch.insert(second_gate);
+    sketch.print();
 
 }
